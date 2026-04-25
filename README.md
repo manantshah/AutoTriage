@@ -21,6 +21,37 @@ Manual triage of customer support emails leads to delayed response times and los
 4. **Archive:** Python simultaneously logs the raw payload and AI insights into a relational SQL database.
 5. **Analyze:** An R script periodically queries the SQL database to generate statistical trend reports.
 
+### Database Schema
+
+```mermaid
+erDiagram
+    Inbound_Emails ||--o{ Tickets : "has"
+
+    Inbound_Emails {
+        INT ID PK
+        VARCHAR Customer_Email
+        VARCHAR Support_Email
+        VARCHAR Subject_Line
+        TEXT Email_Body
+        TIMESTAMPTZ Received_At
+    }
+
+    Tickets {
+        INT Ticket_ID PK
+        INT Email_ID FK
+        VARCHAR Airtable_Record_ID
+        TIMESTAMPTZ Created_At
+        VARCHAR Status
+        VARCHAR Assigned_To
+        INT AI_Sentiment_Score
+        VARCHAR Ticket_Category
+        VARCHAR Priority
+        TEXT AI_Summary
+        TIMESTAMPTZ SLA_Deadline
+        TIMESTAMPTZ Resolved_At
+    }
+```
+
 ## Phases of development
 * System Architecture & Database Schema Design
 * Phase 1: Data Ingestion (GAS to Python)
