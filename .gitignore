@@ -1,0 +1,34 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+*.egg-info/
+dist/
+build/
+
+# --- Environment Secrets (CRITICAL) ---
+.env
+
+# --- Databases ---
+*.sqlite3
+*.db
+# (PostgreSQL is usually a service, so no local file to ignore,
+# but we ignore local logs just in case)
+*.log
+
+# --- R Analytics ---
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+*.Rproj
+
+# --- IDEs & OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
