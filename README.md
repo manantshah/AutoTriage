@@ -33,14 +33,17 @@ erDiagram
         VARCHAR Support_Email
         VARCHAR Subject_Line
         TEXT Email_Body
-        TIMESTAMPTZ Received_At
+        TIMESTAMPTZ Email_Received_At
+        TIMESTAMPTZ GAS_Fired_At
+        TIMESTAMPTZ System_Logged_At
     }
 
     Tickets {
         INT Ticket_ID PK
         INT Email_ID FK
         VARCHAR Airtable_Record_ID
-        TIMESTAMPTZ Created_At
+        TIMESTAMPTZ System_Created_At
+        TIMESTAMPTZ Airtable_Created_At
         VARCHAR Status
         VARCHAR Assigned_To
         INT AI_Sentiment_Score
