@@ -55,6 +55,81 @@ erDiagram
     }
 ```
 
+## API Contracts
+
+This project relies on two primary REST API connections to move data from the ingestion point to the workflow management board.
+
+### 1. Ingestion: Google Apps Script -> Python Server
+This endpoint receives raw email payloads extracted from Gmail and inserts them into the `Inbound_Emails` SQL table.
+
+* **Method:** `POST`
+* **Endpoint:** `/api/v1/tickets/inbound`
+* **Headers:**
+  * `Content-Type: application/json`
+  * `x-api-key: <YOUR_SECRET_PYTHON_API_KEY>`
+* **Request Body:**
+  ```json
+  {
+      "Customer_Email": "abc@gmail.com",
+      "Support_Email": "support-xyz@gmail.com",
+      "Subject_Line": "Need help with receipt generation",
+      "Email_Body": "Did not receive an e-receipt after I made a payment of INR 2499 for the JKL product.",
+      "Email_Received_At": "2026-04-25T12:19:00.000Z",
+      "GAS_Fired_At": "2026-04-25T12:29:05.000Z"
+  }
+  ```
+* **Expected Response (Success):** `201 Created`
+  ```json
+  {
+      "status": "success",
+      "message": "Email ingested and queued for AI processing.",
+      "internal_email_id": 42
+  }
+  ```
+* **Expected Response (Error):** `422 Unprocessable Entity` (If JSON is formatted incorrectly) or `401 Unauthorized` (If API key is missing)
+
+### 2. Routing: Python Server -> Airtable
+After the Python server enriches the raw email with AI metadata, it pushes the actionable data to the Airtable workspace.
+
+* **Method:** `POST`
+* **Endpoint:** `https://api.airtable.com/v0/{baseId}/{tableId}`
+* **Headers:**
+  * `Content-Type: application/json`
+  * `Authorization: Bearer <YOUR_AIRTABLE_PERSONAL_ACCESS_TOKEN>`
+* **Request Body:**
+  ```json
+  {
+      "records": [
+        {
+          "fields": {
+            "Customer_Email": "abc@gmail.com",
+            "Subject_Line": "Need help with receipt generation",
+            "AI_Summary": "The customer is requesting a missing e-receipt for a 2499 INR purchase of the JKL product.",
+            "Ticket_Category": "Billing",
+            "Priority": "Medium",
+            "AI_Sentiment_Score": 4,
+            "Status": "Open",
+            "SLA_Deadline": "2026-04-26T12:19:00.000Z"
+          }
+        }
+      ]
+  }
+  ```
+* **Expected Response (Success):** `200 OK` Note: Python extracts the `id` and `createdTime` from this response to save into the SQL `Tickets` table.
+  ```json
+  {
+      "records": [
+        {
+          "id": "recL1a2B3c4D5e6F7",
+          "createdTime": "2026-04-25T12:30:26.000Z",
+          "fields": {
+            "Customer_Email": "abc@gmail.com",
+            "Subject_Line": "Need help with receipt generation"
+          }
+        }
+      ]
+  }
+  ```
 ## Phases of development
 * System Architecture & Database Schema Design
 * Phase 1: Data Ingestion (GAS to Python)
