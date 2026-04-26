@@ -28,30 +28,30 @@ erDiagram
     Inbound_Emails ||--o{ Tickets : "has"
 
     Inbound_Emails {
-        INT ID PK
-        VARCHAR Customer_Email
-        VARCHAR Support_Email
-        VARCHAR Subject_Line
-        TEXT Email_Body
-        TIMESTAMPTZ Email_Received_At
-        TIMESTAMPTZ GAS_Fired_At
-        TIMESTAMPTZ System_Logged_At
+        INT id PK
+        VARCHAR customer_email
+        VARCHAR support_email
+        VARCHAR subject_line
+        TEXT email_body
+        TIMESTAMPTZ email_received_at
+        TIMESTAMPTZ GAS_fired_at
+        TIMESTAMPTZ system_logged_at
     }
 
     Tickets {
-        INT Ticket_ID PK
-        INT Email_ID FK
-        VARCHAR Airtable_Record_ID
-        TIMESTAMPTZ System_Created_At
-        TIMESTAMPTZ Airtable_Created_At
-        VARCHAR Status
-        VARCHAR Assigned_To
-        INT AI_Sentiment_Score
-        VARCHAR Ticket_Category
-        VARCHAR Priority
-        TEXT AI_Summary
-        TIMESTAMPTZ SLA_Deadline
-        TIMESTAMPTZ Resolved_At
+        INT ticket_id PK
+        INT email_id FK
+        VARCHAR airtable_record_id
+        TIMESTAMPTZ system_created_at
+        TIMESTAMPTZ airtable_created_at
+        VARCHAR status
+        VARCHAR assigned_to
+        INT ai_sentiment_score
+        VARCHAR ticket_category
+        VARCHAR priority
+        TEXT ai_summary
+        TIMESTAMPTZ sla_deadline
+        TIMESTAMPTZ resolved_at
     }
 ```
 
@@ -70,12 +70,12 @@ This endpoint receives raw email payloads extracted from Gmail and inserts them 
 * **Request Body:**
   ```json
   {
-      "Customer_Email": "abc@gmail.com",
-      "Support_Email": "support-xyz@gmail.com",
-      "Subject_Line": "Need help with receipt generation",
-      "Email_Body": "Did not receive an e-receipt after I made a payment of INR 2499 for the JKL product.",
-      "Email_Received_At": "2026-04-25T12:19:00.000Z",
-      "GAS_Fired_At": "2026-04-25T12:29:05.000Z"
+      "customer_email": "abc@gmail.com",
+      "support_email": "support-xyz@gmail.com",
+      "subject_line": "Need help with receipt generation",
+      "email_body": "Did not receive an e-receipt after I made a payment of INR 2499 for the JKL product.",
+      "email_received_at": "2026-04-25T12:19:00.000Z",
+      "GAS_fired_at": "2026-04-25T12:29:05.000Z"
   }
   ```
 * **Expected Response (Success):** `201 Created`
@@ -102,14 +102,14 @@ After the Python server enriches the raw email with AI metadata, it pushes the a
       "records": [
         {
           "fields": {
-            "Customer_Email": "abc@gmail.com",
-            "Subject_Line": "Need help with receipt generation",
-            "AI_Summary": "The customer is requesting a missing e-receipt for a 2499 INR purchase of the JKL product.",
-            "Ticket_Category": "Billing",
-            "Priority": "Medium",
-            "AI_Sentiment_Score": 4,
-            "Status": "Open",
-            "SLA_Deadline": "2026-04-26T12:19:00.000Z"
+            "customer_email": "abc@gmail.com",
+            "subject_line": "Need help with receipt generation",
+            "ai_summary": "The customer is requesting a missing e-receipt for a 2499 INR purchase of the JKL product.",
+            "ticket_category": "Billing",
+            "priority": "Medium",
+            "ai_sentiment_score": 4,
+            "status": "Open",
+            "sla_deadline": "2026-04-26T12:19:00.000Z"
           }
         }
       ]
@@ -123,8 +123,8 @@ After the Python server enriches the raw email with AI metadata, it pushes the a
           "id": "recL1a2B3c4D5e6F7",
           "createdTime": "2026-04-25T12:30:26.000Z",
           "fields": {
-            "Customer_Email": "abc@gmail.com",
-            "Subject_Line": "Need help with receipt generation"
+            "customer_email": "abc@gmail.com",
+            "subject_line": "Need help with receipt generation"
           }
         }
       ]
