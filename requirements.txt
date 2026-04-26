@@ -4,3 +4,5 @@ pydantic
 psycopg2-binary
 requests
 python-dotenv
+fastapi[standard]
+google-genai

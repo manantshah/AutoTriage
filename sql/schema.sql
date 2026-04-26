@@ -1,0 +1,3 @@
+CREATE TABLE Inbound_Emails (id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY, customer_email varchar, support_email varchar, subject_line varchar, email_body text, email_received_at timestamptz, GAS_fired_at timestamptz, system_logged_at timestamptz DEFAULT current_timestamp);
+
+CREATE TABLE Tickets (ticket_id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY, email_id integer REFERENCES Inbound_Emails(id), airtable_record_id varchar, system_created_at timestamptz, airtable_created_at timestamptz, status varchar, assigned_to varchar, ai_sentiment_score integer, ticket_category varchar, priority varchar, ai_summary text, sla_deadline timestamptz, resolved_at timestamptz);
